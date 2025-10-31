@@ -2,8 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import serverless from 'serverless-http';
-import * as dotenv from 'dotenv';
-dotenv.config();
 
 let cachedServer: any = null;
 
@@ -18,9 +16,8 @@ async function bootstrapServer() {
   return cachedServer;
 }
 
-// DEFAULT EXPORT que Lambda requiere
-export default async function handler(event: any, context: any) {
+export const handler = async (event: any, context: any) => {
   const server = await bootstrapServer();
   const proxy = serverless(server);
   return proxy(event, context);
-}
+};
