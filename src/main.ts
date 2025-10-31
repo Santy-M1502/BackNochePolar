@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as dotenv from 'dotenv';
-import * as serverless from 'serverless-http';
+import serverless from 'serverless-http';
 
 dotenv.config();
 
