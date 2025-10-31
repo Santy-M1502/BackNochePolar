@@ -13,15 +13,15 @@ async function bootstrapServer() {
     const app = await NestFactory.create(AppModule);
     app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
     app.enableCors();
-    await app.init(); // inicializa Nest, no app.listen()
+    await app.init();
     cachedServer = app.getHttpAdapter().getInstance();
   }
   return cachedServer;
 }
 
-// export named, Lambda espera un handler
-export const handler = async (event: any, context: any) => {
+// DEFAULT EXPORT que Lambda requiere
+export default async function handler(event: any, context: any) {
   const server = await bootstrapServer();
   const proxy = serverless(server);
   return proxy(event, context);
-};
+}
