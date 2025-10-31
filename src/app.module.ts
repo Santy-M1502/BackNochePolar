@@ -4,8 +4,6 @@ import { AppService } from './app.service';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { AutenticacionModule } from './autenticacion/autenticacion.module';
 import { PublicacionesModule } from './publicaciones/publicaciones.module';
-import * as dotenv from 'dotenv';
-dotenv.config();
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
@@ -13,7 +11,6 @@ import { MongooseModule } from '@nestjs/mongoose';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({
-      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         uri: config.get<string>('MONGO_URI'),
@@ -23,5 +20,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     AutenticacionModule,
     PublicacionesModule,
   ],
+  controllers: [AppController],  
+  providers: [AppService],       
 })
 export class AppModule {}
