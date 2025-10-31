@@ -6,6 +6,8 @@ import { AutenticacionModule } from './autenticacion/autenticacion.module';
 import { PublicacionesModule } from './publicaciones/publicaciones.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 @Module({
   imports: [
@@ -13,7 +15,7 @@ import { MongooseModule } from '@nestjs/mongoose';
       isGlobal: true,
     }),
 
-    MongooseModule.forRoot(process.env.MONGO_URI || ''),
+    MongooseModule.forRoot(process.env.MONGO_URI || 'mongodb://localhost:27017/nochepolar'),
 
     UsuariosModule,
     AutenticacionModule,
