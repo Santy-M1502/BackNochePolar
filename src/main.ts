@@ -10,14 +10,16 @@ async function bootstrapServer() {
     const app = await NestFactory.create(AppModule);
     app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
     app.enableCors();
-    await app.init();
+    await app.init(); // no app.listen()
     cachedServer = app.getHttpAdapter().getInstance();
   }
   return cachedServer;
 }
 
-export const handler = async (event: any, context: any) => {
+const serverlessHandler = async (event: any, context: any) => {
   const server = await bootstrapServer();
   const proxy = serverless(server);
   return proxy(event, context);
 };
+
+export default serverlessHandler;
