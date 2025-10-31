@@ -1,5 +1,3 @@
-// src/auth/auth.controller.ts
-// Controlador que expone los endpoints de autenticación
 import {
   Body,
   Controller,
@@ -13,7 +11,7 @@ import {
 import { AutenticacionGuard } from './autenticacion.guard';
 import { AutenticacionService } from './autenticacion.service';
 
-@Controller('auth') // Ruta base: /auth
+@Controller('auth')
 export class AutenticacionController {
   constructor(private authService: AutenticacionService) { }
 

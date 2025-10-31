@@ -1,4 +1,3 @@
-// src/modules/usuarios/dto/create-usuario.dto.ts
 import { IsNotEmpty, IsString, MinLength, IsEmail, IsDateString, IsOptional } from 'class-validator';
 
 export class CreateUsuarioDto {
