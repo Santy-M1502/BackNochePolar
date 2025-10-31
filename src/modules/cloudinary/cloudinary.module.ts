@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { CloudinaryConfig } from '../../config/cloudinary.config';
+import { cloudinary } from './cloudinary.config';
 
 @Module({
   providers: [
     {
       provide: 'CLOUDINARY',
-      useFactory: CloudinaryConfig,
+      useFactory: () => cloudinary,
     },
   ],
   exports: ['CLOUDINARY'],
