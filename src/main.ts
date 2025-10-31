@@ -1,9 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import * as dotenv from 'dotenv';
 import serverless from 'serverless-http';
-
+import * as dotenv from 'dotenv';
 dotenv.config();
 
 let cachedServer: any = null;

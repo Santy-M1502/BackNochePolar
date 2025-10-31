@@ -4,24 +4,24 @@ import { AppService } from './app.service';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { AutenticacionModule } from './autenticacion/autenticacion.module';
 import { PublicacionesModule } from './publicaciones/publicaciones.module';
-import { ConfigModule } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
 import * as dotenv from 'dotenv';
 dotenv.config();
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
+    ConfigModule.forRoot({ isGlobal: true }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        uri: config.get<string>('MONGO_URI'),
+      }),
     }),
-
-    MongooseModule.forRoot(process.env.MONGO_URI || 'mongodb://localhost:27017/nochepolar'),
-
     UsuariosModule,
     AutenticacionModule,
     PublicacionesModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
