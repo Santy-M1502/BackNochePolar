@@ -11,8 +11,4 @@ if (process.env.CLOUDINARY_URL) {
   });
 }
 
-if (!process.env.CLOUDINARY_URL && (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET)) {
-  console.warn('[cloudinary] Credenciales incompletas. Asegúrate de configurar CLOUDINARY_URL o CLOUDINARY_CLOUD_NAME/API_KEY/API_SECRET.');
-}
-
 export { cloudinary };
