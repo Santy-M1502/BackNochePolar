@@ -1,25 +1,24 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import serverless from 'serverless-http';
 
-let cachedServer: any = null;
-
-async function bootstrapServer() {
-  if (!cachedServer) {
+async function bootstrap() {
+  try {
     const app = await NestFactory.create(AppModule);
+
+    // Pipes y CORS
     app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
     app.enableCors();
-    await app.init(); // no app.listen()
-    cachedServer = app.getHttpAdapter().getInstance();
+
+    // Puerto que Render asigna
+    const port = process.env.PORT || 3000;
+    await app.listen(port);
+
+    console.log(`Server running on port ${port}`);
+  } catch (err) {
+    console.error('Bootstrap error:', err);
+    process.exit(1);
   }
-  return cachedServer;
 }
 
-const serverlessHandler = async (event: any, context: any) => {
-  const server = await bootstrapServer();
-  const proxy = serverless(server);
-  return proxy(event, context);
-};
-
-export default serverlessHandler;
+bootstrap();
