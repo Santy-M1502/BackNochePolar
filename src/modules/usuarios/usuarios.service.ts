@@ -27,49 +27,60 @@ export class UsuariosService {
         return this.UsuarioModel.findById(id).exec();
     }
 
-    async create(createUsuarioDto: CreateUsuarioDto): Promise<UsuarioDocumento> {
-        console.log('UsuariosService.create DTO:', createUsuarioDto);
+    async create(createUsuarioDto: CreateUsuarioDto, file?: Express.Multer.File): Promise<UsuarioDocumento> {
+    console.log('UsuariosService.create DTO:', createUsuarioDto, 'file?', !!file);
 
-        const existingUserMail = await this.findByEmail(createUsuarioDto.email);
-        if (existingUserMail) {
-            throw new BadRequestException('El email ya está registrado');
-        }
+    const existingUserMail = await this.findByEmail(createUsuarioDto.email);
+    if (existingUserMail) {
+        throw new BadRequestException('El email ya está registrado');
+    }
 
-        const existingUsername = await this.findByUsername(createUsuarioDto.username);
-        if (existingUsername) {
-            throw new BadRequestException('El username ya está registrado');
-        }
+    const existingUsername = await this.findByUsername(createUsuarioDto.username);
+    if (existingUsername) {
+        throw new BadRequestException('El username ya está registrado');
+    }
 
-        const required = ['nombre', 'apellido', 'username', 'email', 'password', 'fecha'];
-        const missing = required.filter((k) => !(createUsuarioDto as any)[k]);
-        if (missing.length > 0) {
+    const required = ['nombre', 'apellido', 'username', 'email', 'password', 'fecha'];
+    const missing = required.filter((k) => !(createUsuarioDto as any)[k]);
+    if (missing.length > 0) {
         throw new BadRequestException(`Faltan campos requeridos: ${missing.join(', ')}`);
-        }
+    }
 
-        try {
+    try {
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(createUsuarioDto.password, saltRounds);
-        console.log('Hashed password:', hashedPassword);
-        
+
         const userObj: Partial<Usuario> = {
-            nombre: createUsuarioDto.nombre,
-            apellido: createUsuarioDto.apellido,
-            username: createUsuarioDto.username,
-            email: createUsuarioDto.email,
-            claveHash: hashedPassword,
-            fecha: new Date(createUsuarioDto.fecha),
-            descripcion: createUsuarioDto.descripcion ?? '',
+        nombre: createUsuarioDto.nombre,
+        apellido: createUsuarioDto.apellido,
+        username: createUsuarioDto.username,
+        email: createUsuarioDto.email,
+        claveHash: hashedPassword,
+        fecha: new Date(createUsuarioDto.fecha),
+        descripcion: createUsuarioDto.descripcion ?? '',
         };
+
+        // si vino archivo: subir a cloudinary y agregar urls/ids
+        if (file) {
+        try {
+        const uploadResult = await this.cloudinaryService.uploadImage(file);
+        userObj.profileImage = uploadResult.secure_url;
+        userObj.cloudinaryPublicId = uploadResult.public_id;
+        } catch (e) {
+            console.error('Error subiendo avatar a Cloudinary:', e);
+            throw new InternalServerErrorException('Error subiendo la imagen');
+        }
+        }
 
         const createdUser = new this.UsuarioModel(userObj);
         return await createdUser.save();
-        } catch (err: any) {
+    } catch (err: any) {
         if (err.name === 'ValidationError') {
-            throw err;
+        throw err;
         }
         console.error('Error creando usuario:', err);
         throw new InternalServerErrorException('No se pudo crear el usuario');
-        }
+    }
     }
 
     async updateProfileImage(
