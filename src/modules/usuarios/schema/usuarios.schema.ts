@@ -38,11 +38,17 @@ export class Usuario{
     })
     fecha: Date
 
+    @Prop({ default: 'usuario '})
+    perfil: string
+
     @Prop({ default: null})
     descripcion?: string
 
-    @Prop({ default: null })
+    @Prop({ default: 'https://res.cloudinary.com/dzwlpr7ay/image/upload/v1762178755/avatar-anon_vmiwkv.png' })
     profileImage?: string;
+
+    @Prop({ default: 'https://res.cloudinary.com/dzwlpr7ay/image/upload/v1762178571/default-avatar_n9xfbe.avif'})
+    profileCover?: string;
 
     @Prop({ default: null })
     cloudinaryPublicId?: string;

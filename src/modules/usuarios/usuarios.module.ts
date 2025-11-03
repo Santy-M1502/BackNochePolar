@@ -1,19 +1,19 @@
 import { Module } from '@nestjs/common';
-import { UsuariosController } from './usuarios.controller';
-import { UsuariosService } from './usuarios.service';
-import { CloudinaryModule } from '../cloudinary/cloudinary.module';
-import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
+import { JwtModule } from '@nestjs/jwt';
+import { UsuariosService } from './usuarios.service';
 import { Usuario, UsuarioSchema } from './schema/usuarios.schema';
+import { UsuariosController } from './usuarios.controller';
+import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 
 @Module({
   imports: [
+    MongooseModule.forFeature([{ name: Usuario.name, schema: UsuarioSchema }]),
     CloudinaryModule,
     JwtModule,
-    MongooseModule.forFeature([{ name: Usuario.name, schema: UsuarioSchema }]),
   ],
-  controllers: [UsuariosController],
   providers: [UsuariosService],
   exports: [UsuariosService],
+  controllers: [UsuariosController],
 })
 export class UsuariosModule {}

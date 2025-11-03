@@ -30,6 +30,16 @@ export class UsuariosService {
     async create(createUsuarioDto: CreateUsuarioDto): Promise<UsuarioDocumento> {
         console.log('UsuariosService.create DTO:', createUsuarioDto);
 
+        const existingUserMail = await this.findByEmail(createUsuarioDto.email);
+        if (existingUserMail) {
+            throw new BadRequestException('El email ya está registrado');
+        }
+
+        const existingUsername = await this.findByUsername(createUsuarioDto.username);
+        if (existingUsername) {
+            throw new BadRequestException('El username ya está registrado');
+        }
+
         const required = ['nombre', 'apellido', 'username', 'email', 'password', 'fecha'];
         const missing = required.filter((k) => !(createUsuarioDto as any)[k]);
         if (missing.length > 0) {
@@ -39,7 +49,8 @@ export class UsuariosService {
         try {
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(createUsuarioDto.password, saltRounds);
-
+        console.log('Hashed password:', hashedPassword);
+        
         const userObj: Partial<Usuario> = {
             nombre: createUsuarioDto.nombre,
             apellido: createUsuarioDto.apellido,

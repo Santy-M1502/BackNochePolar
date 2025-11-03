@@ -7,11 +7,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         MongooseModule.forRootAsync({
             imports: [ConfigModule],
             useFactory: async (configService: ConfigService) => ({
-                uri: configService.get<string>('MONGODB_URI', 'mongodb://localhost:27017/redsocial'),
+                uri: configService.get<string>('MONGO_URI'),
             }),
             inject: [ConfigService],
-        }),
-    ],
-    exports: [MongooseModule],
+            }),
+        ],
+        exports: [MongooseModule],
 })
 export class DatabaseModule { }

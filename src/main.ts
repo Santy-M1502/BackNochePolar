@@ -1,22 +1,23 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
-  try {
-    const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    origin: [
+      'http://localhost:4200',
+      'https://front-noche-polar.vercel.app'
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
 
-    app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-    app.enableCors();
+  app.useGlobalPipes(new ValidationPipe());
 
-    const port = process.env.PORT || 3000;
-    await app.listen(port);
-
-    console.log(`Server running on port ${port}`);
-  } catch (err) {
-    console.error('Bootstrap error:', err);
-    process.exit(1);
-  }
+  await app.listen(3000);
 }
-
 bootstrap();
