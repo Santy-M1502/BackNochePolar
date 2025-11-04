@@ -77,7 +77,7 @@ export class UsuariosController {
 
   @Get('all')
   async getAll() {
-    return this.usersService.UsuarioModel.find({}, { email: 1, username: 1, _id: 0 }).exec();
+    return this.usersService.getAll();
   }
 
 

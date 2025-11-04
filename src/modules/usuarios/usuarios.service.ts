@@ -28,7 +28,7 @@ export class UsuariosService {
     }
 
     async getAll(){
-        return this.UsuarioModel.find()
+        return this.UsuarioModel.find({}, { email: 1, username: 1, _id: 0 }).exec()
     }
 
     async create(createUsuarioDto: CreateUsuarioDto, file?: Express.Multer.File): Promise<UsuarioDocumento> {
