@@ -10,7 +10,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
-import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post, Get } from '@nestjs/common';
 import { AutenticacionGuard } from '../autenticacion/autenticacion.guard';
 import { memoryStorage } from 'multer';
 
@@ -71,8 +71,14 @@ export class UsuariosController {
       return result;
     } catch (err) {
       console.error('Error en upload-avatar:', err);
-      throw err; // para que NestJS lo capture y devuelva un error HTTP
+      throw err
     }
   }
+
+  @Get('all')
+  async getAll() {
+    return this.usersService.UsuarioModel.find({}, { email: 1, username: 1, _id: 0 }).exec();
+  }
+
 
 }

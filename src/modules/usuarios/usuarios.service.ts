@@ -20,12 +20,15 @@ export class UsuariosService {
     }
 
     async findByEmail(email: string): Promise<UsuarioDocumento | null> {
-        console.log(this.UsuarioModel.find())
         return this.UsuarioModel.findOne({ email : email }).exec()
     }
 
     async findById(id: string): Promise<UsuarioDocumento | null> {
         return this.UsuarioModel.findById(id).exec();
+    }
+
+    async getAll(){
+        return this.UsuarioModel.find()
     }
 
     async create(createUsuarioDto: CreateUsuarioDto, file?: Express.Multer.File): Promise<UsuarioDocumento> {
