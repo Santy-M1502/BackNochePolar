@@ -33,7 +33,7 @@ export class UsuariosService {
     const existingUserMail = await this.findByEmail(createUsuarioDto.email);
     if (existingUserMail) {
         throw new BadRequestException('El email ya está registrado');
-    }
+}
 
     const existingUsername = await this.findByUsername(createUsuarioDto.username);
     if (existingUsername) {

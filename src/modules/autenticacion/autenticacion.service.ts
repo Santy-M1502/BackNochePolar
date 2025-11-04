@@ -11,6 +11,7 @@ export class AutenticacionService {
   ) { }
 
   async signIn(email: string, pass: string): Promise<{ access_token: string }> {
+    console.log('acaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, ', email, pass)
     const user = await this.usersService.findByEmail(email);
 
     if(!user){
