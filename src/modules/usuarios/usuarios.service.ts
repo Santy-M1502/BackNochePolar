@@ -20,6 +20,7 @@ export class UsuariosService {
     }
 
     async findByEmail(email: string): Promise<UsuarioDocumento | null> {
+        console.log(this.UsuarioModel.find())
         return this.UsuarioModel.findOne({ email : email }).exec()
     }
 
