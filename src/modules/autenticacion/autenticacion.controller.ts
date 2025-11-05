@@ -18,9 +18,8 @@ export class AutenticacionController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  @HttpCode(HttpStatus.OK)
-  async login(@Body() body: { identifier: string; password: string }) {
-    return this.authService.signIn(body.identifier, body.password);
+  signIn(@Body() signInDto: LoginDto) {
+    return this.authService.signIn(signInDto.email, signInDto.password);
   }
 
   @UseGuards(AutenticacionGuard)
