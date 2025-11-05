@@ -10,35 +10,38 @@ export class AutenticacionService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(email: string, pass: string): Promise<{ access_token: string }> {
-    const user = await this.usersService.findByEmailOrUsername(email);
+  async signIn(identifier: string, password: string) {
+    const user = await this.usersService.findByEmailOrUsername(identifier);
 
     if (!user) {
-      throw new BadRequestException('No existe una cuenta con ese email');
+      throw new BadRequestException('No existe una cuenta con ese usuario o correo');
     }
 
-    const passwordCorrecta = await bcrypt.compare(pass, user.claveHash);
-
-    if (!passwordCorrecta) {
+    const passwordOk = await bcrypt.compare(password, user.claveHash);
+    if (!passwordOk) {
       throw new UnauthorizedException('Contraseña incorrecta');
     }
 
     const payload = {
       sub: user._id.toString(),
       username: user.username,
+      email: user.email,
     };
 
+    const token = await this.jwtService.signAsync(payload);
+
+    const { claveHash, cloudinaryPublicId, ...userData } = user.toObject();
+
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      ...userData,
+      access_token: token,
     };
   }
 
   async getUpdatedProfile(userId: string) {
     const user = await this.usersService.findById(userId);
 
-    if (!user) {
-      throw new BadRequestException('Usuario no encontrado');
-    }
+    if (!user) throw new BadRequestException('Usuario no encontrado');
 
     const { claveHash, ...result } = user.toObject();
     return result;
