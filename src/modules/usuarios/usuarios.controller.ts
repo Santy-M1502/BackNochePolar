@@ -61,7 +61,8 @@ export class UsuariosController {
         console.warn('No se recibió ningún archivo');
         throw new Error('No se recibió ningún archivo');
       }
-
+      console.log('🟢 Archivo recibido:', file?.originalname, file?.mimetype, file?.size);
+      console.log('👤 Usuario:', req.user);
       const userId = req.user.sub;
 
       const updatedUser = await this.usersService.updateProfileImage(userId, file);
