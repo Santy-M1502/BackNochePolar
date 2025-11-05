@@ -31,6 +31,12 @@ export class UsuariosService {
         return this.UsuarioModel.find({}, { email: 1, username: 1, _id: 0 }).exec()
     }
 
+    async findByEmailOrUsername(identifier: string): Promise<UsuarioDocumento | null> {
+        return this.UsuarioModel.findOne({
+        $or: [{ username: identifier }, { email: identifier }]
+        }).exec();
+    }
+
     async create(createUsuarioDto: CreateUsuarioDto, file?: Express.Multer.File): Promise<UsuarioDocumento> {
     console.log('UsuariosService.create DTO:', createUsuarioDto, 'file?', !!file);
 
@@ -64,7 +70,6 @@ export class UsuariosService {
         descripcion: createUsuarioDto.descripcion ?? '',
         };
 
-        // si vino archivo: subir a cloudinary y agregar urls/ids
         if (file) {
         try {
         const uploadResult = await this.cloudinaryService.uploadImage(file);

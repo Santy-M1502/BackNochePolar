@@ -27,7 +27,6 @@ export class AutenticacionGuard implements CanActivate {
           secret: jwtConstants.secret
         }
       );
-      console.log('payloadddd', payload)
       request['user'] = payload;
 
     } catch (error) {

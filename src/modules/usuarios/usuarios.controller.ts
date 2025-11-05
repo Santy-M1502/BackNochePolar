@@ -41,8 +41,7 @@ export class UsuariosController {
   }
 
   @Post('upload-avatar')
-  @UseGuards(AutenticacionGuard)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('avatar'))
   async uploadAvatar(
     @UploadedFile(
       new ParseFilePipe({

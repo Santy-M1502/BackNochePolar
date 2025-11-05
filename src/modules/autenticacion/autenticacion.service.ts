@@ -11,7 +11,7 @@ export class AutenticacionService {
   ) {}
 
   async signIn(email: string, pass: string): Promise<{ access_token: string }> {
-    const user = await this.usersService.findByEmail(email);
+    const user = await this.usersService.findByEmailOrUsername(email);
 
     if (!user) {
       throw new BadRequestException('No existe una cuenta con ese email');
