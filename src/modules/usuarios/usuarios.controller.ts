@@ -56,7 +56,7 @@ export class UsuariosController {
     @Request() req,
   ) {
     try {
-      
+      console.log("hoolllsadas")
       if (!file) {
         console.warn('No se recibió ningún archivo');
         throw new Error('No se recibió ningún archivo');
