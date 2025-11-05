@@ -41,6 +41,7 @@ export class UsuariosController {
   }
 
   @Post('upload-avatar')
+  @UseGuards(AutenticacionGuard)
   @UseInterceptors(FileInterceptor('avatar'))
   async uploadAvatar(
     @UploadedFile(
