@@ -23,7 +23,6 @@ export class UsuariosController {
   @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(FileInterceptor('avatar', { storage: memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } }))
   async register(@Body() createUserDto: CreateUsuarioDto, @UploadedFile() avatar?: Express.Multer.File) {
-    console.log('Register body recibido:', createUserDto, 'avatar?', !!avatar);
     try {
       const user = await this.usersService.create(createUserDto, avatar);
       const userObj = user.toObject ? user.toObject() : user;
@@ -58,8 +57,6 @@ export class UsuariosController {
         console.warn('No se recibió ningún archivo');
         throw new Error('No se recibió ningún archivo');
       }
-      console.log('🟢 Archivo recibido:', file?.originalname, file?.mimetype, file?.size);
-      console.log('👤 Usuario:', req.user);
       const userId = req.user.sub;
 
       const updatedUser = await this.usersService.updateProfileImage(userId, file);
@@ -76,6 +73,11 @@ export class UsuariosController {
   @Get('all')
   async getAll() {
     return this.usersService.getAll();
+  }
+
+  @Get()
+  async all(){
+    return this.usersService.all();
   }
 
 

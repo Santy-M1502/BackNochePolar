@@ -31,6 +31,10 @@ export class UsuariosService {
         return this.UsuarioModel.find({}, { email: 1, username: 1, _id: 0 }).exec()
     }
 
+    async all(){
+        return this.UsuarioModel.find({}).exec()
+    }
+
     async findByEmailOrUsername(identifier: string): Promise<UsuarioDocumento | null> {
         return this.UsuarioModel.findOne({
         $or: [{ username: identifier }, { email: identifier }]

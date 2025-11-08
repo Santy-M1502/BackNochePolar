@@ -1,11 +1,17 @@
-import { IsNotEmpty, IsOptional, IsString, IsUrl } from "class-validator";
+import { IsOptional, IsString } from 'class-validator';
 
 export class CreatePublicacionDto {
-  @IsNotEmpty()
+  @IsString()
+  titulo: string;
+
   @IsString()
   texto: string;
 
   @IsOptional()
   @IsString()
   imagenUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  cloudinaryPublicId?: string;
 }

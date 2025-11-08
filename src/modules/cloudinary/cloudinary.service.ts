@@ -25,6 +25,27 @@ export class CloudinaryService {
     });
   }
 
+  async uploadPublicacionImage(
+    file: Express.Multer.File,
+  ): Promise<UploadApiResponse | UploadApiErrorResponse> {
+    return new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        {
+          resource_type: 'auto',
+          folder: 'red-social/publicaciones',
+          transformation: [
+            { width: 800, height: 800, crop: 'limit' },
+            { quality: 'auto' },
+          ],
+        },
+        (error, result) => {
+          if (error) return reject(error);
+          if (result) resolve(result);
+        },
+      ).end(file.buffer);
+    });
+  }
+
   async deleteImage(publicId: string): Promise<any> {
     return cloudinary.uploader.destroy(publicId);
   }

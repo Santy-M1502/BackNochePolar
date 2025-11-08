@@ -1,6 +1,6 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument, Types } from "mongoose";
-import { Usuario } from "../../usuarios/schema/usuarios.schema";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Types } from 'mongoose';
+import { Usuario } from '../../usuarios/schema/usuarios.schema';
 
 export type PublicacionDocumento = HydratedDocument<Publicacion>;
 
@@ -9,14 +9,27 @@ export class Publicacion {
   @Prop({ type: Types.ObjectId, ref: Usuario.name, required: true })
   usuario: Types.ObjectId;
 
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
+  titulo: string;
+
+  @Prop({ type: String, required: true })
   texto: string;
 
-  @Prop({ default: null })
+  @Prop({ type: String, default: null })
   imagenUrl?: string;
 
-  @Prop({ default: true })
-  activa: boolean;
+  @Prop({ type: String, default: null })
+  cloudinaryPublicId?: string;
+
+  @Prop({ type: Boolean, default: true })
+  activo: boolean;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: Usuario.name }] })
+  likes: Types.ObjectId[];
+
+  @Prop({ type: Number, default: 0 })
+  likesCount: number;
+  
 }
 
 export const PublicacionSchema = SchemaFactory.createForClass(Publicacion);
