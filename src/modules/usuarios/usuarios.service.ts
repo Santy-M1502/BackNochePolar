@@ -38,7 +38,6 @@ export class UsuariosService {
     }
 
     async create(createUsuarioDto: CreateUsuarioDto, file?: Express.Multer.File): Promise<UsuarioDocumento> {
-    console.log('UsuariosService.create DTO:', createUsuarioDto, 'file?', !!file);
 
     const existingUserMail = await this.findByEmail(createUsuarioDto.email);
     if (existingUserMail) {

@@ -15,10 +15,10 @@ import { AutenticacionGuard } from '../autenticacion/autenticacion.guard';
 import { memoryStorage } from 'multer';
 
 
-@Controller('usuarios')
+@Controller('usuarios') 
 export class UsuariosController {
     constructor(private readonly usersService: UsuariosService) {}
-
+//{url}/usuarios/register
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(FileInterceptor('avatar', { storage: memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } }))
@@ -39,7 +39,7 @@ export class UsuariosController {
       throw err;
     }
   }
-
+//{url}/usuarios/upload-avatar
   @Post('upload-avatar')
   @UseGuards(AutenticacionGuard)
   @UseInterceptors(FileInterceptor('avatar'))
@@ -54,7 +54,6 @@ export class UsuariosController {
     @Request() req,
   ) {
     try {
-      console.log("hoolllsadas")
       if (!file) {
         console.warn('No se recibió ningún archivo');
         throw new Error('No se recibió ningún archivo');

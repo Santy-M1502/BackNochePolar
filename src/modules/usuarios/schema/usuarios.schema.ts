@@ -1,10 +1,12 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import { HydratedDocument, Types  } from "mongoose";
 
 export type UsuarioDocumento = HydratedDocument<Usuario>;
 
 @Schema({timestamps: true})
 export class Usuario{
+
+    _id: Types.ObjectId;
 
     @Prop({
         required: true,
