@@ -24,54 +24,55 @@ import { CloudinaryService } from "../cloudinary/cloudinary.service";
 
 @Controller("publicaciones")
 export class PublicacionesController {
-  constructor(private readonly publicacionesService: PublicacionesService, private readonly cloudinaryService: CloudinaryService,) {}
+  constructor(
+    private readonly publicacionesService: PublicacionesService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
-    @UseGuards(AutenticacionGuard)
-    @Post()
-    @UseInterceptors(FileInterceptor("imagen"))
-    async crearPublicacion(
-      @Body() body: CreatePublicacionDto,
-      @Req() req: Request,
-      @UploadedFile() file?: Express.Multer.File,
-    ) {
-      const user: any = req.user;
-      const usuarioId = user._id;
+  // Crear publicación
+  @UseGuards(AutenticacionGuard)
+  @Post()
+  @UseInterceptors(FileInterceptor("imagen"))
+  async crearPublicacion(
+    @Body() body: CreatePublicacionDto,
+    @Req() req: Request,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    const user: any = req.user;
+    const usuarioId = user._id;
+    if (!usuarioId) throw new UnauthorizedException("Usuario no autenticado");
 
-      if (!usuarioId) throw new UnauthorizedException("Usuario no autenticado");
+    let imagenUrl = null;
+    let cloudinaryPublicId = null;
 
-      let imagenUrl = null;
-      let cloudinaryPublicId = null;
-
-      if (file) {
-        try {
-          const uploadResult = await this.cloudinaryService.uploadPublicacionImage(file);
-          imagenUrl = uploadResult.secure_url;
-          cloudinaryPublicId = uploadResult.public_id;
-        } catch (e) {
-          console.error("❌ Error subiendo imagen de publicación:", e);
-          throw new InternalServerErrorException("Error subiendo la imagen");
-        }
-      } else {
-        console.log("⚠️ No se recibió archivo");
+    if (file) {
+      try {
+        const uploadResult = await this.cloudinaryService.uploadPublicacionImage(file);
+        imagenUrl = uploadResult.secure_url;
+        cloudinaryPublicId = uploadResult.public_id;
+      } catch (e) {
+        console.error("❌ Error subiendo imagen de publicación:", e);
+        throw new InternalServerErrorException("Error subiendo la imagen");
       }
-
-
-      return this.publicacionesService.crearPublicacion(
-        usuarioId,
-        body.titulo,
-        body.texto,
-        imagenUrl || undefined,
-        cloudinaryPublicId || undefined,
-      );
     }
 
+    return this.publicacionesService.crearPublicacion(
+      usuarioId,
+      body.titulo,
+      body.texto,
+      imagenUrl || undefined,
+      cloudinaryPublicId || undefined,
+    );
+  }
 
+  // Eliminar publicación
   @UseGuards(AutenticacionGuard)
   @Delete(":id")
   async eliminarPublicacion(@Param("id") id: string, @Req() req: Request) {
     return this.publicacionesService.eliminarPublicacion(id, req.user as any);
   }
 
+  // Actualizar publicación
   @UseGuards(AutenticacionGuard)
   @Patch(":id")
   async actualizarPublicacion(
@@ -82,6 +83,7 @@ export class PublicacionesController {
     return this.publicacionesService.actualizarPublicacion(id, req.user as any, body);
   }
 
+  // Obtener publicaciones con filtros generales
   @Get()
   async obtenerPublicaciones(
     @Query("usuarioId") usuarioId?: string,
@@ -101,53 +103,73 @@ export class PublicacionesController {
     });
   }
 
-  @Get("inactivas")
-  async obtenerInactivas(
-    @Query("limit") limit?: number,
-    @Query("offset") offset?: number,
-  ) {
-    return this.publicacionesService.obtenerInactivas(
-      Number(limit) || 10,
-      Number(offset) || 0,
-    );
-  }
-
+  // Últimas publicaciones
   @Get("ultimas")
-  async ultimas(@Query("limit") limit?: number) {
-    return this.publicacionesService.obtenerUltimas(Number(limit) || 5);
+  async ultimas(
+    @Query("usuarioId") usuarioId?: string,
+    @Query("limit") limit?: number
+  ) {
+    return this.publicacionesService.obtenerUltimas(Number(limit) || 5, usuarioId);
   }
 
+  // Más antiguas
   @Get("antiguas")
-  async antiguas(@Query("limit") limit?: number) {
-    return this.publicacionesService.obtenerMasAntiguas(Number(limit) || 5);
+  async antiguas(
+    @Query("usuarioId") usuarioId?: string,
+    @Query("limit") limit?: number
+  ) {
+    return this.publicacionesService.obtenerMasAntiguas(Number(limit) || 5, usuarioId);
   }
 
+  // Publicaciones activas
+  @Get("activas")
+  async activas(
+    @Query("limit") limit?: number,
+    @Query("offset") offset?: number
+  ) {
+    return this.publicacionesService.obtenerActivas(Number(limit) || 10, Number(offset) || 0);
+  }
+
+  // Publicaciones inactivas
+  @Get("inactivas")
+  async inactivas(
+    @Query("limit") limit?: number,
+    @Query("offset") offset?: number
+  ) {
+    return this.publicacionesService.obtenerInactivas(Number(limit) || 10, Number(offset) || 0);
+  }
+
+  // Publicaciones con imagen
   @Get("con-imagen")
   async conImagen(@Query("limit") limit?: number) {
     return this.publicacionesService.obtenerConImagen(Number(limit) || 10);
   }
 
+  // Búsqueda por título o texto
+  @Get("buscar")
+  async buscar(
+    @Query("q") query: string,
+    @Query("limit") limit?: number,
+    @Query("offset") offset?: number
+  ) {
+    return this.publicacionesService.buscarPublicaciones(query, Number(limit) || 10, Number(offset) || 0);
+  }
+
+  // Likes
   @UseGuards(AutenticacionGuard)
   @Post(':id/like')
-  async darLike(
-    @Param('id') publicacionId: string,
-    @Req() req: any,
-  ) {
+  async darLike(@Param('id') publicacionId: string, @Req() req: any) {
     const usuarioId = req.user?._id;
     if (!usuarioId) throw new UnauthorizedException('Usuario no autenticado');
-
     return this.publicacionesService.darLike(publicacionId, usuarioId);
   }
 
   @UseGuards(AutenticacionGuard)
   @Delete(':id/like')
-  async quitarLike(
-    @Param('id') publicacionId: string,
-    @Req() req: any,
-  ) {
+  async quitarLike(@Param('id') publicacionId: string, @Req() req: any) {
     const usuarioId = req.user?._id;
     if (!usuarioId) throw new UnauthorizedException('Usuario no autenticado');
-
     return this.publicacionesService.quitarLike(publicacionId, usuarioId);
   }
+  
 }

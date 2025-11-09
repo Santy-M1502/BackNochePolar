@@ -124,43 +124,6 @@ export class PublicacionesService {
   // GET /publicaciones?username=juanperez
   // GET /publicaciones?offset=10&limit=5
 
-  async obtenerInactivas(limit = 10, offset = 0) {
-    console.log("📥 Buscando publicaciones inactivas...");
-    const publicaciones = await this.publicacionModel
-      .find({ activa: false })
-      .sort({ updatedAt: -1 })
-      .skip(offset)
-      .limit(limit)
-      .populate("usuario", "username nombre apellido profileImage");
-
-    console.log(`✅ ${publicaciones.length} publicaciones inactivas encontradas`);
-    return publicaciones;
-  }
-
-  async obtenerUltimas(limit = 5) {
-    return this.publicacionModel
-      .find({ activa: { $ne: false } })
-      .sort({ createdAt: -1 })
-      .limit(limit)
-      .populate("usuario", "username profileImage");
-  }
-
-  async obtenerMasAntiguas(limit = 5) {
-    return this.publicacionModel
-      .find({ activa: { $ne: false } })
-      .sort({ createdAt: 1 })
-      .limit(limit)
-      .populate("usuario", "username profileImage");
-  }
-
-  async obtenerConImagen(limit = 10) {
-    return this.publicacionModel
-      .find({ imagenUrl: { $ne: null }, activa: { $ne: false } })
-      .sort({ createdAt: -1 })
-      .limit(limit)
-      .populate("usuario", "username profileImage");
-  }
-
   async toggleLike(publicacionId: string, usuarioId: string) {
     const publicacion = await this.publicacionModel.findById(publicacionId);
     if (!publicacion) throw new NotFoundException("Publicación no encontrada");
@@ -225,4 +188,55 @@ export class PublicacionesService {
 
     return { message: "Like eliminado", likes: publicacion.likesCount };
   }
+
+  async obtenerUltimas(limit: number, usuarioId?: string) {
+  const filtro = usuarioId ? { usuario: usuarioId } : {};
+  return this.publicacionModel
+    .find(filtro)
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .exec();
+}
+
+async obtenerMasAntiguas(limit: number, usuarioId?: string) {
+  const filtro = usuarioId ? { usuario: usuarioId } : {};
+  return this.publicacionModel
+    .find(filtro)
+    .sort({ createdAt: 1 })
+    .limit(limit)
+    .exec();
+}
+
+async obtenerActivas(limit: number, offset: number) {
+  return this.publicacionModel
+    .find({ activo: true })
+    .skip(offset)
+    .limit(limit)
+    .exec();
+}
+
+async obtenerInactivas(limit: number, offset: number) {
+  return this.publicacionModel
+    .find({ activo: false })
+    .skip(offset)
+    .limit(limit)
+    .exec();
+}
+
+async buscarPublicaciones(query: string, limit: number, offset: number) {
+  const regex = new RegExp(query, "i");
+  return this.publicacionModel
+    .find({ $or: [{ titulo: regex }, { texto: regex }] })
+    .skip(offset)
+    .limit(limit)
+    .exec();
+}
+
+async obtenerConImagen(limit: number) {
+  return this.publicacionModel
+    .find({ imagenUrl: { $ne: null } })
+    .limit(limit)
+    .exec();
+}
+
 }
