@@ -189,22 +189,28 @@ export class PublicacionesService {
     return { message: "Like eliminado", likes: publicacion.likesCount };
   }
 
-  async obtenerUltimas(limit: number, usuarioId?: string) {
-    const filtro = usuarioId ? { usuario: usuarioId } : {};
+  async obtenerUltimas(limit: number, offset = 0, usuarioId?: string) {
+    const filtro: any = { activa: { $ne: false } };
+    if (usuarioId) filtro.usuario = usuarioId;
+
     return this.publicacionModel
       .find(filtro)
       .populate("usuario", "username nombre apellido profileImage")
       .sort({ createdAt: -1 })
+      .skip(offset)
       .limit(limit)
       .exec();
   }
 
-  async obtenerMasAntiguas(limit: number, usuarioId?: string) {
-    const filtro = usuarioId ? { usuario: usuarioId } : {};
+  async obtenerMasAntiguas(limit: number, offset = 0, usuarioId?: string) {
+    const filtro: any = { activa: { $ne: false } };
+    if (usuarioId) filtro.usuario = usuarioId;
+
     return this.publicacionModel
       .find(filtro)
       .populate("usuario", "username nombre apellido profileImage")
       .sort({ createdAt: 1 })
+      .skip(offset)
       .limit(limit)
       .exec();
   }
