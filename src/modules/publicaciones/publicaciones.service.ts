@@ -48,7 +48,7 @@ export class PublicacionesService {
 
     return this.publicacionModel.findByIdAndUpdate(
       publicacionId,
-      { activa: false },
+      { activo: false },
       { new: true },
     );
   }
@@ -190,7 +190,7 @@ export class PublicacionesService {
   }
 
   async obtenerUltimas(limit = 5, offset = 0, usuarioId?: string) {
-    const filtro: any = { activa: true };
+    const filtro: any = { activo: true };
     if (usuarioId) filtro.usuario = usuarioId;
 
     return this.publicacionModel
@@ -202,7 +202,7 @@ export class PublicacionesService {
   }
 
   async obtenerMasAntiguas(limit = 5, offset = 0, usuarioId?: string) {
-    const filtro: any = { activa: true };
+    const filtro: any = { activo: true };
     if (usuarioId) filtro.usuario = usuarioId;
 
     return this.publicacionModel
