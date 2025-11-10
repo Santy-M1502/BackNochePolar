@@ -180,4 +180,43 @@ export class PublicacionesController {
     return this.publicacionesService.quitarLike(publicacionId, usuarioId);
   }
   
+  // ✅ Obtener por usuario
+  @Get('usuario/:usuarioId')
+  async obtenerPorUsuario(
+    @Param('usuarioId') usuarioId: string,
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string
+  ) {
+    return this.publicacionesService.obtenerPorUsuario(usuarioId, Number(limit) || 10, Number(offset) || 0);
+  }
+
+  // ✅ Últimas del usuario
+  @Get('usuario/:usuarioId/ultimas')
+  async obtenerUltimasPorUsuario(
+    @Param('usuarioId') usuarioId: string,
+    @Query('limit') limit?: string
+  ) {
+    return this.publicacionesService.obtenerUltimasPorUsuario(usuarioId, Number(limit) || 5);
+  }
+
+  // ✅ Más antiguas del usuario
+  @Get('usuario/:usuarioId/antiguas')
+  async obtenerAntiguasPorUsuario(
+    @Param('usuarioId') usuarioId: string,
+    @Query('limit') limit?: string
+  ) {
+    return this.publicacionesService.obtenerAntiguasPorUsuario(usuarioId, Number(limit) || 5);
+  }
+
+  // ✅ Activas del usuario
+  @Get('usuario/:usuarioId/activas')
+  async obtenerActivasPorUsuario(@Param('usuarioId') usuarioId: string) {
+    return this.publicacionesService.obtenerActivasPorUsuario(usuarioId);
+  }
+
+  // ✅ Inactivas del usuario
+  @Get('usuario/:usuarioId/inactivas')
+  async obtenerInactivasPorUsuario(@Param('usuarioId') usuarioId: string) {
+    return this.publicacionesService.obtenerInactivasPorUsuario(usuarioId);
+  }
 }

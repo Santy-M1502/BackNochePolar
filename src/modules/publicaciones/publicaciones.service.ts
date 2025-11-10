@@ -252,4 +252,43 @@ export class PublicacionesService {
       .exec();
   }
 
+  async obtenerPorUsuario(usuarioId: string, limit: number, offset: number) {
+    return this.publicacionModel.find({ usuario: new Types.ObjectId(usuarioId) })
+      .populate('usuario', 'username profileImage')
+      .sort({ createdAt: -1 })
+      .skip(offset)
+      .limit(limit)
+      .exec();
+  }
+
+  async obtenerUltimasPorUsuario(usuarioId: string, limit: number) {
+    return this.publicacionModel.find({ usuario: new Types.ObjectId(usuarioId), activo: true })
+      .populate('usuario', 'username profileImage')
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .exec();
+  }
+
+  async obtenerAntiguasPorUsuario(usuarioId: string, limit: number) {
+    return this.publicacionModel.find({ usuario: new Types.ObjectId(usuarioId), activo: true })
+      .populate('usuario', 'username profileImage')
+      .sort({ createdAt: 1 })
+      .limit(limit)
+      .exec();
+  }
+
+  async obtenerActivasPorUsuario(usuarioId: string) {
+    return this.publicacionModel.find({ usuario: new Types.ObjectId(usuarioId), activo: true })
+      .populate('usuario', 'username profileImage')
+      .sort({ createdAt: -1 })
+      .exec();
+  }
+
+  async obtenerInactivasPorUsuario(usuarioId: string) {
+    return this.publicacionModel.find({ usuario: new Types.ObjectId(usuarioId), activo: false })
+      .populate('usuario', 'username profileImage')
+      .sort({ createdAt: -1 })
+      .exec();
+  }
+
 }
