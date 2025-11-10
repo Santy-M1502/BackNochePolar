@@ -51,7 +51,6 @@ export class ComentariosController {
     );
   }
 
-  // ✅ Dar like a comentario
   @UseGuards(AutenticacionGuard)
   @Post(':comentarioId/like')
   async darLike(@Param('comentarioId') comentarioId: string, @Req() req: Request) {
@@ -60,7 +59,6 @@ export class ComentariosController {
     return this.comentariosService.darLike(comentarioId, usuarioId);
   }
 
-  // ✅ Quitar like
   @UseGuards(AutenticacionGuard)
   @Delete(':comentarioId/like')
   async quitarLike(@Param('comentarioId') comentarioId: string, @Req() req: Request) {
@@ -69,7 +67,6 @@ export class ComentariosController {
     return this.comentariosService.quitarLike(comentarioId, usuarioId);
   }
 
-  // ✅ Obtener comentarios de una publicación (paginado)
   @Get('publicacion/:publicacionId')
   async obtenerPorPublicacion(
     @Param('publicacionId') publicacionId: string,
@@ -85,7 +82,6 @@ export class ComentariosController {
     );
   }
 
-  // ✅ Obtener respuestas de un comentario (paginado)
   @Get(':comentarioId/respuestas')
   async obtenerRespuestas(
     @Param('comentarioId') comentarioId: string,
@@ -99,7 +95,6 @@ export class ComentariosController {
     );
   }
 
-  // ✅ Obtener comentarios por usuario
   @Get('usuario/:usuarioId')
   async obtenerPorUsuario(
     @Param('usuarioId') usuarioId: string,
@@ -113,7 +108,6 @@ export class ComentariosController {
     );
   }
 
-  // ✅ Obtener últimos comentarios globales
   @Get('ultimos')
   async obtenerUltimos(
     @Query('limit') limit?: string,
@@ -125,7 +119,6 @@ export class ComentariosController {
     );
   }
 
-  // ✅ Obtener más populares (por likes)
   @Get('populares')
   async obtenerPopulares(
     @Query('limit') limit?: string,

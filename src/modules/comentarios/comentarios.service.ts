@@ -1,14 +1,14 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { Comentario } from './schema/comentario.schema';
-import { Publicacion } from '../publicaciones/schema/publicaciones.schema';
+import { Comentario, ComentarioDocumento } from './schema/comentario.schema';
+import { Publicacion, PublicacionDocumento } from '../publicaciones/schema/publicaciones.schema';
 
 @Injectable()
 export class ComentariosService {
   constructor(
-    @InjectModel(Comentario.name) private comentarioModel: Model<Comentario>,
-    @InjectModel(Publicacion.name) private publicacionModel: Model<Publicacion>,
+    @InjectModel(Comentario.name) private comentarioModel: Model<ComentarioDocumento>,
+    @InjectModel(Publicacion.name) private publicacionModel: Model<PublicacionDocumento>,
   ) {}
 
   async comentarPublicacion(usuarioId: string, publicacionId: string, texto: string) {
