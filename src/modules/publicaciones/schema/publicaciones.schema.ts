@@ -29,6 +29,9 @@ export class Publicacion {
 
   @Prop({ type: Number, default: 0 })
   likesCount: number;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Comentario' }], default: [] })
+  comentarios: Types.ObjectId[];
   
 }
 

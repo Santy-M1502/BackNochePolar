@@ -7,6 +7,7 @@ import { PublicacionesModule } from './modules/publicaciones/publicaciones.modul
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { InteraccionesModule } from './modules/interacciones/interacciones.module';
+import { ComentariosModule } from './modules/comentarios/comentarios.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { InteraccionesModule } from './modules/interacciones/interacciones.modul
     AutenticacionModule, 
     UsuariosModule,
     PublicacionesModule,
-    InteraccionesModule
+    InteraccionesModule,
+    ComentariosModule
   ],
   controllers:[AppController],
   providers: [AppService]
