@@ -28,7 +28,11 @@ export class InteraccionesService {
   }
 
   async obtenerLikesDeUsuario(usuarioId: string) {
-    return this.likeModel.find({ usuario: usuarioId }).populate('publicacion');
+    const objectId = new Types.ObjectId(usuarioId);
+    return this.publicacionModel
+      .find({ likes: objectId })
+      .populate('usuario', 'username profileImage')
+      .exec();
   }
 
   async toggleGuardado(usuarioId: string, publicacionId: string) {
