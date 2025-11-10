@@ -103,22 +103,30 @@ export class PublicacionesController {
     });
   }
 
-  // Últimas publicaciones
-  @Get("ultimas")
-  async ultimas(
-    @Query("usuarioId") usuarioId?: string,
-    @Query("limit") limit?: number
+  @Get('ultimas')
+  async obtenerUltimas(
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+    @Query('usuarioId') usuarioId?: string,
   ) {
-    return this.publicacionesService.obtenerUltimas(Number(limit) || 5, usuarioId);
+    return this.publicacionesService.obtenerUltimas(
+      Number(limit) || 5,
+      Number(offset) || 0,
+      usuarioId,
+    );
   }
 
-  // Más antiguas
-  @Get("antiguas")
-  async antiguas(
-    @Query("usuarioId") usuarioId?: string,
-    @Query("limit") limit?: number
+  @Get('antiguas')
+  async obtenerMasAntiguas(
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+    @Query('usuarioId') usuarioId?: string,
   ) {
-    return this.publicacionesService.obtenerMasAntiguas(Number(limit) || 5, usuarioId);
+    return this.publicacionesService.obtenerMasAntiguas(
+      Number(limit) || 5,
+      Number(offset) || 0,
+      usuarioId,
+    );
   }
 
   // Publicaciones activas
