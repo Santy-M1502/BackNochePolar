@@ -190,53 +190,62 @@ export class PublicacionesService {
   }
 
   async obtenerUltimas(limit: number, usuarioId?: string) {
-  const filtro = usuarioId ? { usuario: usuarioId } : {};
-  return this.publicacionModel
-    .find(filtro)
-    .sort({ createdAt: -1 })
-    .limit(limit)
-    .exec();
-}
+    const filtro = usuarioId ? { usuario: usuarioId } : {};
+    return this.publicacionModel
+      .find(filtro)
+      .populate("usuario", "username nombre apellido profileImage")
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .exec();
+  }
 
-async obtenerMasAntiguas(limit: number, usuarioId?: string) {
-  const filtro = usuarioId ? { usuario: usuarioId } : {};
-  return this.publicacionModel
-    .find(filtro)
-    .sort({ createdAt: 1 })
-    .limit(limit)
-    .exec();
-}
+  async obtenerMasAntiguas(limit: number, usuarioId?: string) {
+    const filtro = usuarioId ? { usuario: usuarioId } : {};
+    return this.publicacionModel
+      .find(filtro)
+      .populate("usuario", "username nombre apellido profileImage")
+      .sort({ createdAt: 1 })
+      .limit(limit)
+      .exec();
+  }
 
-async obtenerActivas(limit: number, offset: number) {
-  return this.publicacionModel
-    .find({ activo: true })
-    .skip(offset)
-    .limit(limit)
-    .exec();
-}
+  async obtenerActivas(limit: number, offset: number) {
+    return this.publicacionModel
+      .find({ activa: { $ne: false } })
+      .populate("usuario", "username nombre apellido profileImage")
+      .skip(offset)
+      .limit(limit)
+      .exec();
+  }
 
-async obtenerInactivas(limit: number, offset: number) {
-  return this.publicacionModel
-    .find({ activo: false })
-    .skip(offset)
-    .limit(limit)
-    .exec();
-}
 
-async buscarPublicaciones(query: string, limit: number, offset: number) {
-  const regex = new RegExp(query, "i");
-  return this.publicacionModel
-    .find({ $or: [{ titulo: regex }, { texto: regex }] })
-    .skip(offset)
-    .limit(limit)
-    .exec();
-}
+  async obtenerInactivas(limit: number, offset: number) {
+    return this.publicacionModel
+      .find({ activa: false })
+      .populate("usuario", "username nombre apellido profileImage")
+      .skip(offset)
+      .limit(limit)
+      .exec();
+  }
 
-async obtenerConImagen(limit: number) {
-  return this.publicacionModel
-    .find({ imagenUrl: { $ne: null } })
-    .limit(limit)
-    .exec();
-}
+
+  async buscarPublicaciones(query: string, limit: number, offset: number) {
+    const regex = new RegExp(query, "i");
+    return this.publicacionModel
+      .find({ $or: [{ titulo: regex }, { texto: regex }] })
+      .populate("usuario", "username nombre apellido profileImage")
+      .skip(offset)
+      .limit(limit)
+      .exec();
+  }
+
+
+  async obtenerConImagen(limit: number) {
+    return this.publicacionModel
+      .find({ imagenUrl: { $ne: null } })
+      .populate("usuario", "username nombre apellido profileImage")
+      .limit(limit)
+      .exec();
+  }
 
 }
