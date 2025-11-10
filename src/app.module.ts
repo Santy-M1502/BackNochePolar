@@ -6,6 +6,7 @@ import { UsuariosModule } from './modules/usuarios/usuarios.module';
 import { PublicacionesModule } from './modules/publicaciones/publicaciones.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { InteraccionesModule } from './modules/interacciones/interacciones.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { AppService } from './app.service';
     DatabaseModule,
     AutenticacionModule, 
     UsuariosModule,
-    PublicacionesModule
+    PublicacionesModule,
+    InteraccionesModule
   ],
   controllers:[AppController],
   providers: [AppService]
