@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
@@ -114,5 +114,35 @@ export class UsuariosService {
         user.cloudinaryPublicId = uploadResult.public_id;
         
         return user.save();
+    }
+
+    async agregarAmigo(userId: string, amigoId: string) {
+        if (userId === amigoId) throw new BadRequestException('No podés agregarte a vos mismo.');
+
+        const user = await this.UsuarioModel.findById(userId);
+        const amigo = await this.UsuarioModel.findById(amigoId);
+
+        if (!user || !amigo) throw new NotFoundException('Usuario no encontrado.');
+
+        if (user.amigos.includes(amigo._id))
+        throw new BadRequestException('Ya son amigos.');
+
+        user.amigos.push(amigo._id);
+        amigo.amigos.push(user._id);
+
+        await user.save();
+        await amigo.save();
+
+        return { message: 'Amigo agregado correctamente.' };
+    }
+
+    async obtenerAmigos(userId: string) {
+        const user = await this.UsuarioModel
+        .findById(userId)
+        .populate('amigos', 'username nombre apellido profileImage');
+
+        if (!user) throw new NotFoundException('Usuario no encontrado.');
+
+        return user.amigos;
     }
 }

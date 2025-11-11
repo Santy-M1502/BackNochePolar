@@ -8,6 +8,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { InteraccionesModule } from './modules/interacciones/interacciones.module';
 import { ComentariosModule } from './modules/comentarios/comentarios.module';
+import { ChatModule } from './modules/chat/chat.module';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { ComentariosModule } from './modules/comentarios/comentarios.module';
     UsuariosModule,
     PublicacionesModule,
     InteraccionesModule,
-    ComentariosModule
+    ComentariosModule,
+    ChatModule
   ],
   controllers:[AppController],
   providers: [AppService]

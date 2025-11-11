@@ -80,5 +80,20 @@ export class UsuariosController {
     return this.usersService.all();
   }
 
+  @UseGuards(AutenticacionGuard)
+  @Post('agregar-amigo')
+  async agregarAmigo(
+    @Body('amigoId') amigoId: string,
+    @Request() req
+  ) {
+    const userId = req.user.sub;
+    return this.usersService.agregarAmigo(userId, amigoId);
+  }
 
+  @UseGuards(AutenticacionGuard)
+  @Get('amigos')
+  async obtenerAmigos(@Request() req) {
+    const userId = req.user.sub;
+    return this.usersService.obtenerAmigos(userId);
+  }
 }
