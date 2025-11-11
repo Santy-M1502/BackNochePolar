@@ -16,8 +16,5 @@ export class ChatController {
   getConversation(@Param('user1') user1: string, @Param('user2') user2: string) {
     return this.chatService.getConversation(user1, user2);
   }
-
-
-
   
 }

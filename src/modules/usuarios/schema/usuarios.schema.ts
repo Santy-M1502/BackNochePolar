@@ -41,7 +41,6 @@ export class Usuario {
   @Prop({ default: null })
   cloudinaryPublicId?: string;
 
-  // ✅ NUEVO: Lista de amigos
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Usuario' }], default: [] })
   amigos: Types.ObjectId[];
 }
