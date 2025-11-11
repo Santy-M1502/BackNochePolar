@@ -46,4 +46,12 @@ export class AutenticacionService {
     const { claveHash, ...result } = user.toObject();
     return result;
   }
+
+  validateToken(token: string) {
+    try {
+      return this.jwtService.verify(token);
+    } catch {
+      return null;
+    }
+  }
 }
