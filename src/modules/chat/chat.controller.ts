@@ -7,18 +7,17 @@ import { AutenticacionGuard } from '../autenticacion/autenticacion.guard';
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
-  @Get('conversation/:partnerId')
-  async getConversation(@Req() req, @Param('partnerId') partnerId: string) {
-    const userId = req.user.sub;
-    return this.chatService.getConversation(userId, partnerId);
+  @Post('send')
+  sendMessage(@Body() body: { from: string; to: string; text: string }) {
+    return this.chatService.sendMessage(body.from, body.to, body.text);
   }
 
-  @Post('send')
-  async sendMessage(
-    @Req() req,
-    @Body() body: { to: string; text: string }
-  ) {
-    const userId = req.user.sub;
-    return this.chatService.sendMessage(userId, body.to, body.text);
+  @Get(':user1/:user2')
+  getConversation(@Param('user1') user1: string, @Param('user2') user2: string) {
+    return this.chatService.getConversation(user1, user2);
   }
+
+
+
+  
 }
