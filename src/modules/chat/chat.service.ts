@@ -11,7 +11,6 @@ export class ChatService {
   ) {}
 
   async sendMessage(from: string, to: string, text: string) {
-    // Ordenamos los usuarios para evitar duplicados (A,B y B,A se vuelve igual)
     const users = [from, to].sort();
 
     let conversation = await this.conversationModel.findOne({ users });

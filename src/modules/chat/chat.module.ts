@@ -4,14 +4,19 @@ import { ChatService } from './chat.service';
 import { ChatController } from './chat.controller';
 import { Conversation, ConversationSchema } from './schema/chat.schema';
 import { ChatGateway } from './chat.gateway';
+import { JwtService } from '@nestjs/jwt';
+import { AutenticacionService } from '../autenticacion/autenticacion.service';
+import { AutenticacionModule } from '../autenticacion/autenticacion.module';
 
 @Module({
   imports: [
+    AutenticacionModule,
     MongooseModule.forFeature([
       { name: Conversation.name, schema: ConversationSchema },
     ]),
   ],
   controllers: [ChatController],
   providers: [ChatService, ChatGateway],
+  exports: [ChatModule]
 })
 export class ChatModule {}
