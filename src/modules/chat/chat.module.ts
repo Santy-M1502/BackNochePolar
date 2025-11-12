@@ -3,7 +3,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ChatService } from './chat.service';
 import { ChatController } from './chat.controller';
 import { Conversation, ConversationSchema } from './schema/chat.schema';
-import { ChatGateway } from './chat.gateway';
 import { JwtService } from '@nestjs/jwt';
 import { AutenticacionService } from '../autenticacion/autenticacion.service';
 import { AutenticacionModule } from '../autenticacion/autenticacion.module';
@@ -16,7 +15,7 @@ import { AutenticacionModule } from '../autenticacion/autenticacion.module';
     ]),
   ],
   controllers: [ChatController],
-  providers: [ChatService, ChatGateway],
+  providers: [ChatService],
   exports: [ChatModule]
 })
 export class ChatModule {}
