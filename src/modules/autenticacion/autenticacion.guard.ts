@@ -21,14 +21,13 @@ export class AutenticacionGuard implements CanActivate {
     }
 
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
-        secret: jwtConstants.secret,
-      });
-
-      request['user'] = {
-        ...payload,
-        _id: payload.sub,
-      };
+      const payload = await this.jwtService.verifyAsync(
+        token,
+        {
+          secret: jwtConstants.secret
+        }
+      );
+      request['user'] = payload;
 
     } catch (error) {
       console.error('❌ Error verificando token:', error);

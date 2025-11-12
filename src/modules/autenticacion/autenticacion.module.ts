@@ -9,12 +9,12 @@ import { AutenticacionController } from './autenticacion.controller';
   imports: [
     UsuariosModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET || 'secreto',
+      secret: process.env.JWT_SECRET || 'default_secret',
       signOptions: { expiresIn: '1h' },
     }),
   ],
-  providers: [AutenticacionService, AutenticacionGuard],
-  controllers:[AutenticacionController],
-  exports: [JwtModule, AutenticacionService, AutenticacionGuard],
+  controllers: [AutenticacionController],
+  providers: [AutenticacionService],
+  exports: [AutenticacionService],
 })
 export class AutenticacionModule {}
