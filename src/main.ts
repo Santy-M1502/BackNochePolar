@@ -11,7 +11,8 @@ const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: [
       'http://localhost:4200',
-      'https://front-noche-polar.vercel.app'
+      'https://front-noche-polar.vercel.app',
+      'https://backnochepolar.onrender.com'
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
