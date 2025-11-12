@@ -21,6 +21,7 @@ const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   app.useWebSocketAdapter(new IoAdapter(app));
 
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
+
 }
 bootstrap();
