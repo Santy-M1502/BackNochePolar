@@ -9,7 +9,6 @@ import { UseGuards } from '@nestjs/common';
 import { Server } from 'socket.io';
 import { WsAuthGuard } from '../autenticacion/authenticacion-ws.guard';
 import { ChatService } from './chat.service';
-
 import { JwtService } from '@nestjs/jwt';
 import { WsException } from '@nestjs/websockets';
 

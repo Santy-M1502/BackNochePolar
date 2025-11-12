@@ -14,7 +14,7 @@ import { AutenticacionController } from './autenticacion.controller';
     }),
   ],
   controllers: [AutenticacionController],
-  providers: [AutenticacionService],
-  exports: [AutenticacionService],
+  providers: [AutenticacionService, AutenticacionGuard],
+  exports: [JwtModule, AutenticacionService, AutenticacionGuard],
 })
 export class AutenticacionModule {}
