@@ -124,6 +124,14 @@ export class PublicacionesService {
   // GET /publicaciones?username=juanperez
   // GET /publicaciones?offset=10&limit=5
 
+  async obtenerPublicacionPorId(id: string) {
+    return this.publicacionModel
+      .findById(id)
+      .populate('usuario', 'username profileImage')
+      .populate('comentarios')
+      .exec();
+  }
+
   async toggleLike(publicacionId: string, usuarioId: string) {
     const publicacion = await this.publicacionModel.findById(publicacionId);
     if (!publicacion) throw new NotFoundException("Publicación no encontrada");

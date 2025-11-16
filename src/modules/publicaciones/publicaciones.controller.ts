@@ -190,6 +190,11 @@ export class PublicacionesController {
     return this.publicacionesService.obtenerPorUsuario(usuarioId, Number(limit) || 10, Number(offset) || 0);
   }
 
+  @Get(':id')
+  async obtenerPublicacionPorId(@Param('id') id: string) {
+    return this.publicacionesService.obtenerPublicacionPorId(id);
+  }
+
   // ✅ Últimas del usuario
   @Get('usuario/:usuarioId/ultimas')
   async obtenerUltimasPorUsuario(
