@@ -26,7 +26,7 @@ export class AutenticacionService {
       sub: user._id.toString(),
       username: user.username,
       email: user.email,
-      rol: user.perfil,
+      rol: user.perfil,  
     };
 
     const token = await this.jwtService.signAsync(payload, { expiresIn: '15m' });
