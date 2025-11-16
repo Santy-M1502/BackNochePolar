@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Comentario, ComentarioDocumento } from './schema/comentario.schema';
@@ -82,41 +82,37 @@ export class ComentariosService {
     limit: number,
     offset: number,
     orden: 'recientes' | 'antiguos' | 'populares',
-    ) {
-    // Tipamos explícitamente sortOptions
-    let sortOptions: Record<string, 1 | -1>;
-
-    if (orden === 'antiguos') sortOptions = { createdAt: 1 };
-    else if (orden === 'populares') sortOptions = { likesCount: -1 };
-    else sortOptions = { createdAt: -1 }; // recientes
+  ) {
+    let sortOptions: Record<string, 1 | -1> =
+      orden === 'antiguos' ? { createdAt: 1 } :
+      orden === 'populares' ? { likesCount: -1 } :
+      { createdAt: -1 };
 
     const [total, comentarios] = await Promise.all([
-        this.comentarioModel.countDocuments({
-        publicacion: publicacionId,
-        comentarioPadre: null,
-        }),
-        this.comentarioModel
+      this.comentarioModel.countDocuments({ publicacion: publicacionId, comentarioPadre: null }),
+      this.comentarioModel
         .find({ publicacion: publicacionId, comentarioPadre: null })
         .sort(sortOptions)
         .skip(offset)
         .limit(limit)
         .populate('usuario', 'username profileImage')
         .populate({
-            path: 'respuestas',
-            populate: { path: 'usuario', select: 'username profileImage' },
-            options: { sort: { createdAt: -1 } as Record<string, 1 | -1>, limit: 3 }, // primeras respuestas
+          path: 'respuestas',
+          populate: { path: 'usuario', select: 'username profileImage' },
+          options: { sort: { createdAt: -1 } as Record<string, 1 | -1>, limit: 3 }, // primeras 3 respuestas
         }),
     ]);
 
     return { total, comentarios };
-    }
+  }
 
-  async obtenerRespuestas(comentarioId: string, limit: number, offset: number) {
+  async obtenerRespuestas(comentarioId: string, limit: number, offset: number, orden: 'recientes' | 'antiguos' = 'recientes') {
+    const sort: Record<string, 1 | -1> = orden === 'antiguos' ? { createdAt: 1 } : { createdAt: -1 };
     const [total, respuestas] = await Promise.all([
       this.comentarioModel.countDocuments({ comentarioPadre: comentarioId }),
       this.comentarioModel
         .find({ comentarioPadre: comentarioId })
-        .sort({ createdAt: -1 })
+        .sort(sort)
         .skip(offset)
         .limit(limit)
         .populate('usuario', 'username profileImage'),
@@ -168,5 +164,20 @@ export class ComentariosService {
     ]);
 
     return { total, comentarios };
+  }
+
+  async editarComentario(comentarioId: string, usuarioId: string, nuevoTexto: string) {
+    const comentario = await this.comentarioModel.findById(comentarioId);
+    if (!comentario) throw new NotFoundException('Comentario no encontrado');
+
+    if (comentario.usuario.toString() !== usuarioId.toString()) {
+      throw new UnauthorizedException('No puedes editar este comentario');
+    }
+
+    comentario.texto = nuevoTexto;
+    comentario.editado = true;
+    await comentario.save();
+
+    return comentario.populate('usuario', 'username profileImage');
   }
 }

@@ -27,6 +27,9 @@ export class Comentario {
 
   @Prop({ type: Number, default: 0 })
   likesCount: number;
+
+  @Prop({ type: Boolean, default: false })
+  editado: boolean;
 }
 
 export const ComentarioSchema = SchemaFactory.createForClass(Comentario);

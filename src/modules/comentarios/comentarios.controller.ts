@@ -9,6 +9,7 @@ import {
   Req,
   UseGuards,
   UnauthorizedException,
+  Patch,
 } from '@nestjs/common';
 import { ComentariosService } from './comentarios.service';
 import { AutenticacionGuard } from '../autenticacion/autenticacion.guard';
@@ -67,6 +68,7 @@ export class ComentariosController {
     return this.comentariosService.quitarLike(comentarioId, usuarioId);
   }
 
+  // Endpoint principal para obtener comentarios de una publicación con paginación
   @Get('publicacion/:publicacionId')
   async obtenerPorPublicacion(
     @Param('publicacionId') publicacionId: string,
@@ -74,14 +76,16 @@ export class ComentariosController {
     @Query('offset') offset?: string,
     @Query('orden') orden?: 'recientes' | 'antiguos' | 'populares',
   ) {
+    // Devuelve comentarios limitados por página. "offset" permite cargar más.
     return this.comentariosService.obtenerPorPublicacion(
       publicacionId,
-      Number(limit) || 10,
+      Number(limit) || 10, // por defecto 10 comentarios
       Number(offset) || 0,
       orden || 'recientes',
     );
   }
 
+  // Endpoint para obtener respuestas de un comentario
   @Get(':comentarioId/respuestas')
   async obtenerRespuestas(
     @Param('comentarioId') comentarioId: string,
@@ -90,11 +94,12 @@ export class ComentariosController {
   ) {
     return this.comentariosService.obtenerRespuestas(
       comentarioId,
-      Number(limit) || 10,
+      Number(limit) || 5, // por defecto 5 respuestas
       Number(offset) || 0,
     );
   }
 
+  // Endpoint para cargar comentarios de un usuario
   @Get('usuario/:usuarioId')
   async obtenerPorUsuario(
     @Param('usuarioId') usuarioId: string,
@@ -108,6 +113,7 @@ export class ComentariosController {
     );
   }
 
+  // Últimos comentarios de todas las publicaciones
   @Get('ultimos')
   async obtenerUltimos(
     @Query('limit') limit?: string,
@@ -119,6 +125,7 @@ export class ComentariosController {
     );
   }
 
+  // Comentarios más populares
   @Get('populares')
   async obtenerPopulares(
     @Query('limit') limit?: string,
@@ -128,5 +135,18 @@ export class ComentariosController {
       Number(limit) || 10,
       Number(offset) || 0,
     );
+  }
+
+  @UseGuards(AutenticacionGuard)
+  @Patch(':comentarioId')
+  async editarComentario(
+    @Param('comentarioId') comentarioId: string,
+    @Body() body: { texto: string },
+    @Req() req: Request,
+  ) {
+    const usuarioId = (req.user as any)?._id;
+    if (!usuarioId) throw new UnauthorizedException('Usuario no autenticado');
+
+    return this.comentariosService.editarComentario(comentarioId, usuarioId, body.texto);
   }
 }
