@@ -128,7 +128,10 @@ export class PublicacionesService {
     return this.publicacionModel
       .findById(id)
       .populate('usuario', 'username profileImage')
-      .populate('comentarios')
+      .populate({
+        path: 'comentarios',
+        populate: { path: 'usuario', select: 'username profileImage' }
+      })
       .exec();
   }
 
