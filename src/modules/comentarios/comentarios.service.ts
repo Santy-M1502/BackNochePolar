@@ -166,7 +166,11 @@ export class ComentariosService {
     return { total, comentarios };
   }
 
-  async editarComentario(comentarioId: string, usuarioId: string, nuevoTexto: string) {
+  async editarComentario(
+    comentarioId: string,
+    usuarioId: string,
+    nuevoTexto: string,
+  ) {
     const comentario = await this.comentarioModel.findById(comentarioId);
     if (!comentario) throw new NotFoundException('Comentario no encontrado');
 
@@ -176,6 +180,7 @@ export class ComentariosService {
 
     comentario.texto = nuevoTexto;
     comentario.editado = true;
+
     await comentario.save();
 
     return comentario.populate('usuario', 'username profileImage');

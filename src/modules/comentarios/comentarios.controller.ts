@@ -147,6 +147,10 @@ export class ComentariosController {
     const usuarioId = (req.user as any)?._id;
     if (!usuarioId) throw new UnauthorizedException('Usuario no autenticado');
 
-    return this.comentariosService.editarComentario(comentarioId, usuarioId, body.texto);
+    return this.comentariosService.editarComentario(
+      comentarioId,
+      usuarioId,
+      body.texto,
+    );
   }
 }
