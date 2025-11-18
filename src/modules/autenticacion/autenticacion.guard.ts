@@ -21,6 +21,10 @@ export class AutenticacionGuard implements CanActivate {
     }
 
     try {
+      console.log('[VALIDATE TOKEN] token recibido:', token);
+        if (!token || token.split('.').length !== 3) {
+          console.log('❌ Token inválido o mal formado');
+        }
       const payload = await this.jwtService.verifyAsync(token, {
         secret: jwtConstants.secret,
       });
