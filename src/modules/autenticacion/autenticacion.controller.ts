@@ -25,7 +25,7 @@ export class AutenticacionController {
 
   @UseGuards(AutenticacionGuard)
   @Get('profile')
-  async getProfile(@Request() req) {
+  async getProfile(@Request() req) {  
     return this.authService.getUpdatedProfile(req.user.sub);
   }
 

@@ -9,6 +9,9 @@ import { AppService } from './app.service';
 import { InteraccionesModule } from './modules/interacciones/interacciones.module';
 import { ComentariosModule } from './modules/comentarios/comentarios.module';
 import { ChatModule } from './modules/chat/chat.module';
+import { EstadisticasController } from './modules/estadisticas/estadisticas.controller';
+import { EstadisticasService } from './modules/estadisticas/estadisticas.service';
+import { EstadisticasModule } from './modules/estadisticas/estadisticas.module';
 
 @Module({
   imports: [
@@ -22,7 +25,8 @@ import { ChatModule } from './modules/chat/chat.module';
     PublicacionesModule,
     InteraccionesModule,
     ComentariosModule,
-    ChatModule
+    ChatModule,
+    EstadisticasModule
   ],
   controllers:[AppController],
   providers: [AppService]

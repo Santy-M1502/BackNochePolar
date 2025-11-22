@@ -43,6 +43,9 @@ export class Usuario {
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Usuario' }], default: [] })
   amigos: Types.ObjectId[];
+
+  @Prop({ default: true })
+  activo: boolean;
 }
 
 export const UsuarioSchema = SchemaFactory.createForClass(Usuario);

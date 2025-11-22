@@ -6,6 +6,8 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
   FileTypeValidator,
+  Delete,
+  Param,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UsuariosService } from './usuarios.service';
@@ -13,6 +15,7 @@ import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post, Get } from '@nestjs/common';
 import { AutenticacionGuard } from '../autenticacion/autenticacion.guard';
 import { memoryStorage } from 'multer';
+import { AdminGuard } from '../common/guards/roles.guard';
 
 
 @Controller('usuarios') 
@@ -96,4 +99,22 @@ export class UsuariosController {
     const userId = req.user.sub;
     return this.usersService.obtenerAmigos(userId);
   }
+
+  @Post(':id/restaurar')
+  @UseGuards(AutenticacionGuard, AdminGuard)
+  async habilitarUsuario(@Param('id') id: string) {
+    return await this.usersService.altaLogica(id);
+  }
+
+  @Delete(':id')
+  @UseGuards(AutenticacionGuard, AdminGuard)
+  async deshabilitarUsuario(@Param('id') id: string) {
+    return await this.usersService.bajaLogica(id);
+  }
+
+  @Get()
+    @UseGuards(AutenticacionGuard, AdminGuard)
+    async listarUsuarios() {
+    return await this.usersService.listar();
+    }
 }

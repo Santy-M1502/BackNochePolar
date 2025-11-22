@@ -41,8 +41,8 @@ export class PublicacionesService {
     if (!publicacion) throw new NotFoundException("Publicación no encontrada");
 
     const usuarioId = usuario._id?.toString() || usuario.sub?.toString();
-
-    if (publicacion.usuario.toString() !== usuarioId && usuario.perfil !== "admin") {
+    const isAdmin = usuario?.rol === 'admin' || usuario?.perfil === 'admin';
+    if (publicacion.usuario.toString() !== usuarioId && !isAdmin) {
       throw new ForbiddenException("No autorizado para eliminar esta publicación");
     }
 
@@ -62,8 +62,9 @@ export class PublicacionesService {
     if (!publicacion) throw new NotFoundException("Publicación no encontrada");
 
     const usuarioId = usuario._id?.toString() || usuario.sub?.toString();
+    const isAdmin = usuario?.rol === 'admin' || usuario?.perfil === 'admin';
 
-    if (publicacion.usuario.toString() !== usuarioId && usuario.perfil !== "admin") {
+    if (publicacion.usuario.toString() !== usuarioId && !isAdmin) {
       throw new ForbiddenException("No autorizado para editar esta publicación");
     }
 

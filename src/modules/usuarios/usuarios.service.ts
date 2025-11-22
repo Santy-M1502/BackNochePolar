@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Get, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import * as bcrypt from 'bcrypt';
@@ -141,5 +141,17 @@ export class UsuariosService {
         if (!user) throw new BadRequestException('Usuario no encontrado');
 
         return user.amigos || [];
+    }
+
+    async bajaLogica(id: string) {
+        return this.UsuarioModel.findByIdAndUpdate(id, { activo: false }, { new: true });
+    }
+
+    async altaLogica(id: string) {
+    return this.UsuarioModel.findByIdAndUpdate(id, { activo: true }, { new: true });
+    }
+
+    async listar() {
+    return this.UsuarioModel.find();
     }
 }
