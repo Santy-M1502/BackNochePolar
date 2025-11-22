@@ -12,7 +12,11 @@ const app = await NestFactory.create(AppModule);
     origin: [
       'http://localhost:4200',
       'https://front-noche-polar.vercel.app',
-      'https://backnochepolar.onrender.com'
+      'https://backnochepolar.onrender.com',
+      'http://26.39.81.87:4200',
+      'http://192.168.1.87:4200',
+      'http://192.168.56.1:4200',
+      'http://127.0.0.1:4200'
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
