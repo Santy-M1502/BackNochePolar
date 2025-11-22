@@ -8,7 +8,6 @@ import { EstadisticasService } from './estadisticas.service';
 import { AdminGuard } from '../common/guards/roles.guard';
 
 @Controller('estadisticas')
-@UseGuards(AdminGuard)
 export class EstadisticasController {
   constructor(private readonly estadisticasService: EstadisticasService) {}
 

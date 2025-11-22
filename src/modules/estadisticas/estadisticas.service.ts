@@ -22,6 +22,7 @@ export class EstadisticasService {
   async publicacionesPorUsuario(fechaInicio: string, fechaFin: string) {
     const inicio = new Date(fechaInicio);
     const fin = new Date(fechaFin);
+    fin.setHours(23, 59, 59, 999);
 
     const resultado = await this.publicacionModel.aggregate([
       { $match: { createdAt: { $gte: inicio, $lte: fin } } },
@@ -54,42 +55,57 @@ export class EstadisticasService {
   async comentariosEnLapso(fechaInicio: string, fechaFin: string) {
     const inicio = new Date(fechaInicio);
     const fin = new Date(fechaFin);
+    fin.setHours(23, 59, 59, 999);
 
-    const cantidad = await this.comentarioModel.countDocuments({
-      createdAt: { $gte: inicio, $lte: fin },
-    });
+    // Calcular duración total y dividir en 3 intervalos
+    const totalMs = fin.getTime() - inicio.getTime();
+    const intervaloMs = totalMs / 3;
 
-    return { cantidad };
+    const periodos = [
+      { desde: new Date(inicio.getTime()), hasta: new Date(inicio.getTime() + intervaloMs) },
+      { desde: new Date(inicio.getTime() + intervaloMs + 1), hasta: new Date(inicio.getTime() + 2 * intervaloMs) },
+      { desde: new Date(inicio.getTime() + 2 * intervaloMs + 1), hasta: fin },
+    ];
+
+    // Contar comentarios en cada periodo
+    const resultados = await Promise.all(
+      periodos.map(async p => {
+        const count = await this.comentarioModel.countDocuments({
+          createdAt: { $gte: p.desde, $lte: p.hasta }
+        });
+        return { desde: p.desde, hasta: p.hasta, count };
+      })
+    );
+
+    return resultados;
   }
 
-  async comentariosPorPublicacion(fechaInicio: string, fechaFin: string) {
-    const inicio = new Date(fechaInicio);
-    const fin = new Date(fechaFin);
+ async comentariosPorPublicacion(fechaInicio: string, fechaFin: string) {
+  const inicio = new Date(fechaInicio);
+  const fin = new Date(fechaFin);
+  fin.setHours(23, 59, 59, 999);
 
-    const resultado = await this.comentarioModel.aggregate([
-      { $match: { createdAt: { $gte: inicio, $lte: fin } } },
-      { $group: { _id: "$publicacion", cantidad: { $sum: 1 } } },
-      { $sort: { cantidad: -1 } },
-      { $limit: 5 },
-      {
-        $lookup: {
-          from: "publicacions",
-          localField: "_id",
-          foreignField: "_id",
-          as: "publicacion",
-        },
-      },
-      { $unwind: "$publicacion" },
-      {
-        $project: {
-          _id: 0,
-          publicacionId: "$publicacion._id",
-          titulo: "$publicacion.titulo",
-          cantidad: 1,
-        },
-      },
-    ]);
+  const resultado = await this.comentarioModel.aggregate([
+    // Filtrar por rango de fechas
+    {
+      $match: {
+        createdAt: { $gte: inicio, $lte: fin }
+      }
+    },
+    // Agrupar por ID de publicación
+    {
+      $group: {
+        _id: '$publicacion',
+        cantidadComentarios: { $sum: 1 }
+      }
+    },
+    { $sort: { _id: 1 } }
+  ]);
 
-    return resultado;
-  }
+  // Mapear para devolver un objeto más amigable
+  return resultado.map(r => ({
+    publicacionId: r._id,
+    cantidad: r.cantidadComentarios
+  }));
+}
 }
