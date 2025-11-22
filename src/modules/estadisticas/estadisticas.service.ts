@@ -24,17 +24,10 @@ export class EstadisticasService {
     const fin = new Date(fechaFin);
 
     const resultado = await this.publicacionModel.aggregate([
-      {
-        $match: {
-          createdAt: { $gte: inicio, $lte: fin },
-        },
-      },
-      {
-        $group: {
-          _id: "$usuario",
-          cantidad: { $sum: 1 },
-        },
-      },
+      { $match: { createdAt: { $gte: inicio, $lte: fin } } },
+      { $group: { _id: "$usuario", cantidad: { $sum: 1 } } },
+      { $sort: { cantidad: -1 } },
+      { $limit: 5 },          
       {
         $lookup: {
           from: "usuarios",
@@ -57,6 +50,7 @@ export class EstadisticasService {
     return resultado;
   }
 
+
   async comentariosEnLapso(fechaInicio: string, fechaFin: string) {
     const inicio = new Date(fechaInicio);
     const fin = new Date(fechaFin);
@@ -73,17 +67,10 @@ export class EstadisticasService {
     const fin = new Date(fechaFin);
 
     const resultado = await this.comentarioModel.aggregate([
-      {
-        $match: {
-          createdAt: { $gte: inicio, $lte: fin },
-        },
-      },
-      {
-        $group: {
-          _id: "$publicacion",
-          cantidad: { $sum: 1 },
-        },
-      },
+      { $match: { createdAt: { $gte: inicio, $lte: fin } } },
+      { $group: { _id: "$publicacion", cantidad: { $sum: 1 } } },
+      { $sort: { cantidad: -1 } },
+      { $limit: 5 },
       {
         $lookup: {
           from: "publicacions",
