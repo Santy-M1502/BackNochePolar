@@ -15,4 +15,6 @@ export class CreateUsuarioDto {
   @IsNotEmpty() @IsDateString() fecha: string;
 
   @IsOptional() @IsString() descripcion?: string;
+
+  @IsOptional() @IsString() perfil?: string;
 }
