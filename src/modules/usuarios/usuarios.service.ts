@@ -71,6 +71,7 @@ export class UsuariosService {
         claveHash: hashedPassword,
         fecha: new Date(createUsuarioDto.fecha),
         descripcion: createUsuarioDto.descripcion ?? '',
+        perfil: createUsuarioDto.perfil ?? 'usuario'
         };
 
         if (file) {
