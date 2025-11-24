@@ -155,4 +155,24 @@ export class UsuariosService {
     async listar() {
     return this.UsuarioModel.find();
     }
+
+    async buscarUsuarios(texto: string): Promise<Usuario[]> {
+    if (!texto || texto.trim() === '') {
+      return [];
+    }
+
+    const regex = new RegExp(texto, 'i');
+
+    return this.UsuarioModel.find({
+      $or: [
+        { username: regex },
+        { nombre: regex },
+        { apellido: regex },
+        { email: regex }
+      ]
+    })
+    .select('username nombre apellido email perfil descripcion profileImage activo')
+    .limit(20)
+    .lean();
+  }
 }

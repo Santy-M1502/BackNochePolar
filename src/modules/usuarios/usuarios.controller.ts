@@ -8,6 +8,7 @@ import {
   FileTypeValidator,
   Delete,
   Param,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UsuariosService } from './usuarios.service';
@@ -116,5 +117,10 @@ export class UsuariosController {
     @UseGuards(AutenticacionGuard, AdminGuard)
     async listarUsuarios() {
     return await this.usersService.listar();
+    }
+
+    @Get('buscar')
+    async buscar(@Query('q') q: string) {
+      return this.usersService.buscarUsuarios(q);
     }
 }
