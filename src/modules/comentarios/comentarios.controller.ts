@@ -68,21 +68,9 @@ export class ComentariosController {
     return this.comentariosService.quitarLike(comentarioId, usuarioId);
   }
 
-  // Endpoint principal para obtener comentarios de una publicación con paginación
   @Get('publicacion/:publicacionId')
-  async obtenerPorPublicacion(
-    @Param('publicacionId') publicacionId: string,
-    @Query('limit') limit?: string,
-    @Query('offset') offset?: string,
-    @Query('orden') orden?: 'recientes' | 'antiguos' | 'populares',
-  ) {
-    // Devuelve comentarios limitados por página. "offset" permite cargar más.
-    return this.comentariosService.obtenerPorPublicacion(
-      publicacionId,
-      Number(limit) || 10, // por defecto 10 comentarios
-      Number(offset) || 0,
-      orden || 'recientes',
-    );
+  async obtenerPorPublicacion(@Param('publicacionId') publicacionId: string) {
+    return this.comentariosService.obtenerPorPublicacion(publicacionId);
   }
 
   // Endpoint para obtener respuestas de un comentario

@@ -77,35 +77,6 @@ export class ComentariosService {
     return comentario.populate('usuario', 'username profileImage');
   }
 
-  async obtenerPorPublicacion(
-    publicacionId: string,
-    limit: number,
-    offset: number,
-    orden: 'recientes' | 'antiguos' | 'populares',
-  ) {
-    let sortOptions: Record<string, 1 | -1> =
-      orden === 'antiguos' ? { createdAt: 1 } :
-      orden === 'populares' ? { likesCount: -1 } :
-      { createdAt: -1 };
-
-    const [total, comentarios] = await Promise.all([
-      this.comentarioModel.countDocuments({ publicacion: publicacionId, comentarioPadre: null }),
-      this.comentarioModel
-        .find({ publicacion: publicacionId, comentarioPadre: null })
-        .sort(sortOptions)
-        .skip(offset)
-        .limit(limit)
-        .populate('usuario', 'username profileImage')
-        .populate({
-          path: 'respuestas',
-          populate: { path: 'usuario', select: 'username profileImage' },
-          options: { sort: { createdAt: -1 } as Record<string, 1 | -1>, limit: 3 }, // primeras 3 respuestas
-        }),
-    ]);
-
-    return { total, comentarios };
-  }
-
   async obtenerRespuestas(comentarioId: string, limit: number, offset: number, orden: 'recientes' | 'antiguos' = 'recientes') {
     const sort: Record<string, 1 | -1> = orden === 'antiguos' ? { createdAt: 1 } : { createdAt: -1 };
     const [total, respuestas] = await Promise.all([
@@ -184,5 +155,13 @@ export class ComentariosService {
     await comentario.save();
 
     return comentario.populate('usuario', 'username profileImage');
+  }
+
+  async obtenerPorPublicacion(publicacionId: string) {
+    return this.comentarioModel
+      .find({ publicacion: new Types.ObjectId(publicacionId) })
+      .populate('usuario', 'username profileImage')
+      .sort({ createdAt: -1 })
+      .exec();
   }
 }

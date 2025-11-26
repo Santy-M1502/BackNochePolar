@@ -29,7 +29,7 @@ export class AutenticacionService {
       rol: user.perfil,  
     };
 
-    const token = await this.jwtService.signAsync(payload, { expiresIn: '15m' });
+    const token = await this.jwtService.signAsync(payload, { expiresIn: '10m' });
 
     const { claveHash, cloudinaryPublicId, ...userData } = user.toObject();
 
@@ -57,6 +57,6 @@ export class AutenticacionService {
 
   async refreshToken(payload: any) {
     const { sub, username, email, rol } = payload;
-    return this.jwtService.signAsync({ sub, username, email, rol }, { expiresIn: '15m' });
+    return this.jwtService.signAsync({ sub, username, email, rol }, { expiresIn: '10m' });
   }
 }

@@ -224,4 +224,17 @@ export class PublicacionesController {
   async obtenerInactivasPorUsuario(@Param('usuarioId') usuarioId: string) {
     return this.publicacionesService.obtenerInactivasPorUsuario(usuarioId);
   }
+
+  @Get('usuario/:usuarioId/rango-fechas')
+  async obtenerPorUsuarioYRango(
+    @Param('usuarioId') usuarioId: string,
+    @Query('desde') desde: string,
+    @Query('hasta') hasta: string,
+  ) {
+    const inicio = new Date(desde);
+    const fin = new Date(hasta);
+    fin.setHours(23, 59, 59, 999);
+
+    return this.publicacionesService.obtenerPorUsuarioYRango(usuarioId, inicio, fin);
+  }
 }

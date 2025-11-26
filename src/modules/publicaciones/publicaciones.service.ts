@@ -303,4 +303,15 @@ export class PublicacionesService {
       .exec();
   }
 
+  async obtenerPorUsuarioYRango(usuarioId: string, desde: Date, hasta: Date) {
+    return this.publicacionModel
+      .find({
+        usuario: new Types.ObjectId(usuarioId),
+        createdAt: { $gte: desde, $lte: hasta }
+      })
+      .populate('usuario', 'username profileImage')
+      .sort({ createdAt: -1 })
+      .exec();
+  }
+
 }
